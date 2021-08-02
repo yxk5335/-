@@ -1,0 +1,31 @@
+class Solution:
+    def networkDelayTime(self, times], N, K)
+        g = {} # 结构为{ui：{vi:wi}}的图
+        for u, v, w in times:
+            g[u] = g.get(u, {})
+            g[u][v] = w
+        if K not in g:
+            return -1
+        
+        # K到所有结点的初始（直接到达）距离，不能直接到达了暂写无穷大‘inf’ 
+        dists = [g[K].get(i, float('inf')) for i in range(1, N + 1)]
+        # 还未得到最短距离的所有结点【未确定节点】，即除自身外的所有结点
+        points = list(range(1, K)) + list(range(K + 1, N + 1))
+        while points:
+            # 得到距离中的最小值和它的结点标识以及它在points里的index
+            minimum, _idx, _point = float('inf'), 0, 0
+            for idx, point in enumerate(points):
+                if dists[point-1] < minimum:
+                    minimum, _idx, _point = dists[point-1], idx, point
+                    
+            points.pop(_idx) # O(1)时间移除该结点，remove是O(n)
+            if _point in g:
+                for v, w in g[_point].items():
+                    if dists[v - 1] > w + minimum: # 当前记录的从起始点到达v代价大于从_point到v的代价，则进行替换
+                        dists[v - 1] = w + minimum
+                        
+        dists.pop(K-1) # 删除自己
+        time = max(dists)
+        if time == float('inf'):
+            return -1
+        return time
